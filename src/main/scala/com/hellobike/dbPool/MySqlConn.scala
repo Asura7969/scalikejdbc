@@ -37,7 +37,7 @@ object MySqlConn {
   /**
     * 初始化连接池
     */
-  private def initConnectionPool(): util.LinkedList[Connection] = {
+  def initConnectionPool(): util.LinkedList[Connection] = {
     AnyRef.synchronized({
       if (pools.isEmpty()) {
         getMysqlConn()
@@ -67,7 +67,7 @@ object MySqlConn {
     * 获得连接
     */
   def getConn():Connection={
-    initConnectionPool()
+    //initConnectionPool()
     pools.poll()
   }
   /**
@@ -109,6 +109,86 @@ object MySqlConn {
       releaseCon(conn)
     }
     user
+  }
+
+  def getByName(tableName:String,name: String): util.ArrayList[Double] = {
+    // connect to the database named "mysql" on the localhost
+    val conn = getConn
+
+    val list:util.ArrayList[Double] = new util.ArrayList[Double]()
+
+    try {
+      // create the statement, and run the select query
+      val statement = conn.createStatement()
+      val sql = s"""SELECT * FROM $tableName WHERE name='$name'""".stripMargin
+      println(sql)
+      val resultSet = statement.executeQuery(sql)
+      while (resultSet.next()) {
+        for(i <- 3 to 6){//去除id和name
+          val data = resultSet.getDouble(1)
+          list.add(data)
+        }
+      }
+
+    } catch {
+      case e:Throwable => {
+        e.printStackTrace()
+        System.exit(1)
+      }
+    } finally {
+      releaseCon(conn)
+    }
+    list
+  }
+
+
+  def getByColumName(tableName:String,columName: String): util.ArrayList[Double] = {
+    // connect to the database named "mysql" on the localhost
+    val conn = getConn
+
+    val list:util.ArrayList[Double] = new util.ArrayList[Double]()
+
+    try {
+      // create the statement, and run the select query
+      val statement = conn.createStatement()
+      val sql = s"""SELECT "$columName" FROM $tableName """.stripMargin
+      println(sql)
+      val resultSet = statement.executeQuery(sql)
+      while (resultSet.next()) {
+        val data = resultSet.getDouble(1)
+        list.add(data)
+      }
+
+    } catch {
+      case e:Throwable => {
+        e.printStackTrace()
+        System.exit(1)
+      }
+    } finally {
+      releaseCon(conn)
+    }
+    list
+  }
+
+
+  def insert(tableName:String,name:String,cloumnName:String,value:Double)={
+
+    val sql = s"""insert into $tableName(name,"${cloumnName}") values($name,$value)"""
+    println(sql)
+    val conn = getConn
+    val statement = conn.createStatement()
+    statement.execute(sql)
+    releaseCon(conn)
+  }
+
+  def update(tableName:String,name:String,cloumnName:String,value:Double)={
+
+    val sql = s"""update $tableName set "${cloumnName}"=$value where name='$name'"""
+    println(sql)
+    val conn = getConn
+    val statement = conn.createStatement()
+    statement.execute(sql)
+    releaseCon(conn)
   }
 
   /**
