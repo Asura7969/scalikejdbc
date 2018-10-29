@@ -1,4 +1,4 @@
-package com.hellobike.dbPool;
+package com.gwz.dbPool;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,4 +1,4 @@
-package com.hellobike
+package com.gwz
 
 import scalikejdbc._
 import scalikejdbc.config.DBs

@@ -1,4 +1,4 @@
-package com.hellobike.redis;
+package com.gwz.redis;
 
 public class RedisConfig {
     //可用连接实例的最大数目，默认值为8；

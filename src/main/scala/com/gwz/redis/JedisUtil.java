@@ -1,4 +1,4 @@
-package com.hellobike.redis;
+package com.gwz.redis;
 
 import org.apache.log4j.Logger;
  

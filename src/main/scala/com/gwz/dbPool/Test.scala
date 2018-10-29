@@ -1,4 +1,4 @@
-package com.hellobike.dbPool
+package com.gwz.dbPool
 
 object Test {
   def main(args: Array[String]): Unit = {

@@ -1,4 +1,4 @@
-package com.hellobike.dbPool
+package com.gwz.dbPool
 
 import java.sql.{Connection, Date, DriverManager}
 import java.util

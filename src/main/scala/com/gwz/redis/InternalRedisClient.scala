@@ -1,4 +1,4 @@
-package com.hellobike.redis
+package com.gwz.redis
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig
 import redis.clients.jedis.JedisPool

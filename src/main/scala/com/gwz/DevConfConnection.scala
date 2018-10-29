@@ -1,4 +1,4 @@
-package com.hellobike
+package com.gwz
 
 import scalikejdbc.{ConnectionPool, DB, SQL, WrappedResultSet}
 import scalikejdbc.config.DBsWithEnv
