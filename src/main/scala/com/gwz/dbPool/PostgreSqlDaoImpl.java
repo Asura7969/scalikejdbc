@@ -1,5 +1,7 @@
 package com.gwz.dbPool;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -9,21 +11,30 @@ public class PostgreSqlDaoImpl {
 
     public static void main(String[] args) {
         //insert
-        String insert = "INSERT INTO user_tbl(name, signup_date) VALUES(?,?);";
-        List<Object[]> params = new ArrayList<Object[]>();
-        Date date = new Date(System.currentTimeMillis());
-        params.add(new Object[]{"张三",date});
-        params.add(new Object[]{"李四",date});
-        //PostgreSqlDaoImpl.insert(insert,params);
+//        String insert = "INSERT INTO user_tbl(name, signup_date) VALUES(?,?);";
+//        List<Object[]> params = new ArrayList<Object[]>();
+//        Date date = new Date(System.currentTimeMillis());
+//        params.add(new Object[]{"张三",date});
+//        params.add(new Object[]{"李四",date});
+//        //PostgreSqlDaoImpl.insert(insert,params);
+//
+//        //select
+//        String select = "select * from user_tbl";
+//        PostgreSqlDaoImpl.select(select);
+//
+//        //update
+//        String update ="update user_tbl set name=? where name=?";
+//        Object[] param = new Object[]{"张二","张三"};
+//        System.out.println("修改行数："+PostgreSqlDaoImpl.update(update, param));
 
-        //select
-        String select = "select * from user_tbl";
-        PostgreSqlDaoImpl.select(select);
+        String json = "{\"1\":1.0,\"3\":3.0,\"3\":4.0,\"4\":5.0}";
+        JSONObject jsonObject = JSONObject.parseObject(json);
 
-        //update
-        String update ="update user_tbl set name=? where name=?";
-        Object[] param = new Object[]{"张二","张三"};
-        System.out.println("修改行数："+PostgreSqlDaoImpl.update(update, param));
+        System.out.println(jsonObject.getDouble("3"));
+        jsonObject.remove("3");
+
+        System.out.println(jsonObject.getDouble("3"));
+        //motif(jsonObject,"0_4",6.0);
 
     }
 
@@ -71,6 +82,35 @@ public class PostgreSqlDaoImpl {
         int row = jdbcHelper.executeUpdate(sql, updateParams);
 
         return row;
+    }
+
+    public static void motif(JSONObject jsonObject, String hhmm,Double value){
+        int hh = Integer.valueOf(hhmm.split("_")[0]);
+        int mm = Integer.valueOf(hhmm.split("_")[1]);
+
+        //计算当前时间的位置
+        int computerIndex = hh * 60 + mm;
+        String indexStr = String.valueOf(computerIndex);
+        Double v1 = jsonObject.getDouble(indexStr);
+        if(null != v1){
+            jsonObject = toOneBefore(jsonObject, computerIndex - 1, v1);
+            jsonObject.put(indexStr,v1);
+        }else{
+            jsonObject.put(indexStr,value);
+        }
+        System.out.println(jsonObject.toJSONString());
+
+    }
+
+    public static JSONObject toOneBefore(JSONObject jsonObject,int index,Double value){
+        Double v1 = jsonObject.getDouble(String.valueOf(index));
+        if(null != v1){
+            jsonObject = toOneBefore(jsonObject, index - 1,v1);
+            jsonObject.put(String.valueOf(index),value);
+        }else{
+            jsonObject.put(String.valueOf(index),v1);
+        }
+        return jsonObject;
     }
 
 
